@@ -5,6 +5,9 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class TopicSender {
     @Autowired
@@ -14,20 +17,31 @@ public class TopicSender {
         User user = new User();
         user.setUserName("Sender1.....");
         user.setMobile("1111111111");
-        rabbitTemplate.convertAndSend("topicExchange",TopicRabbitConfig.MESSAGE,user);
+        rabbitTemplate.convertAndSend("topicExchange","topic.message",user);
     }
 
     public void send2() {
         User user = new User();
         user.setUserName("Sender2.....");
         user.setMobile("2222222");
-        rabbitTemplate.convertAndSend("topicExchange",TopicRabbitConfig.MESSAGES,user);
+        rabbitTemplate.convertAndSend("topicExchange","topic.messages",user);
     }
 
     public void send3() {
         User user = new User();
         user.setUserName("Sender3.....");
         user.setMobile("33333");
-        rabbitTemplate.convertAndSend("topicExchange","user.message",user.toString());
+        rabbitTemplate.convertAndSend("topicExchange","user.message",user);
+    }
+
+    public void send4() {
+        //生产一批武器
+        List<String> list = new ArrayList<String>();
+
+        list.add("手枪");
+        list.add("步枪");
+        list.add("机枪");
+
+        rabbitTemplate.convertAndSend("topicExchange","arm.gun",list);
     }
 }

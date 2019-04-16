@@ -9,22 +9,34 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TopicRabbitConfig {
-    public static final String MESSAGE = "topic.message";
-    public static final String MESSAGES = "topic.messages";
+
+    public static final String TOPIC_MESSAGE = "topic.message";
+    public static final String TOPIC_MESSAGE_S = "topic.messages";
+    public static final String USER_MESSAGE = "user.message";
+
+    /**
+     * 武器库
+     */
+    public static final String ARM_QUEUE = "arm.queue";
 
     @Bean
-    public Queue queueMessage() {
-        return new Queue(TopicRabbitConfig.MESSAGE);
+    public Queue queueTopicMessage() {
+        return new Queue(TopicRabbitConfig.TOPIC_MESSAGE);
     }
 
     @Bean
-    public Queue queueMessages() {
-        return new Queue(TopicRabbitConfig.MESSAGES);
+    public Queue queueTopicMessages() {
+        return new Queue(TopicRabbitConfig.TOPIC_MESSAGE_S);
     }
 
     @Bean
     public Queue queueUserMessage() {
-        return new Queue("user.message");
+        return new Queue(TopicRabbitConfig.USER_MESSAGE);
+    }
+
+    @Bean
+    public Queue queueArm() {
+        return new Queue(TopicRabbitConfig.ARM_QUEUE);
     }
 
     @Bean
@@ -33,19 +45,25 @@ public class TopicRabbitConfig {
     }
 
     @Bean
-    Binding bindingExchangeMessage(Queue queueMessage, TopicExchange exchange) {
-        return BindingBuilder.bind(queueMessage).to(exchange).with("topic.message");
+    Binding bindingExchangeMessage(Queue queueTopicMessage, TopicExchange exchange) {
+        //所有匹配routingKey=topic.message的消息，将放入Queue[name="topic.message"]
+        return BindingBuilder.bind(queueTopicMessage).to(exchange).with("topic.message");
     }
 
     @Bean
-    Binding bindingExchangeMessages(Queue queueMessages, TopicExchange exchange) {
-        //Queue:topic.messages  匹配路由Key:topic.#
-        return BindingBuilder.bind(queueMessages).to(exchange).with("topic.#");
+    Binding bindingExchangeMessages(Queue queueTopicMessages, TopicExchange exchange) {
+        //所有匹配routingKey=topic.# 的消息，将放入Queue[name="topic.messages"]
+        return BindingBuilder.bind(queueTopicMessages).to(exchange).with("topic.#");
     }
 
     @Bean
     Binding bindingExchangeUserMessage(Queue queueUserMessage, TopicExchange exchange) {
-        //Queue:topic.messages  匹配路由Key:topic.#
+        ///所有匹配routingKey=user.# 的消息，将放入Queue[name="user.messages"]
         return BindingBuilder.bind(queueUserMessage).to(exchange).with("user.#");
+    }
+
+    @Bean
+    Binding bindingExchangeArm(Queue queueArm, TopicExchange exchange) {
+        return BindingBuilder.bind(queueArm).to(exchange).with("arm.#");
     }
 }

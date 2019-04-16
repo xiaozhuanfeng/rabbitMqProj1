@@ -14,6 +14,6 @@ public class HelloSender {
     public void send() {
         String context = "hello " + new Date();
         System.out.println("Sender : " + context);
-        this.rabbitTemplate.convertAndSend("hello", context);
+        this.rabbitTemplate.convertAndSend("mesgQue", context);
     }
 }

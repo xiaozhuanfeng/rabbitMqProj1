@@ -1,6 +1,5 @@
 package com.example.demo.rabbitMq;
 
-import com.example.demo.rabbitMq.exchange.topic.TopicReceiver1;
 import com.example.demo.rabbitMq.exchange.topic.TopicSender;
 import com.example.demo.utils.Base64Utils;
 import org.junit.Test;
@@ -14,9 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class RabbitMqTopicTest {
     @Autowired
     private TopicSender topicSender;
-
-    @Autowired
-    private TopicReceiver1 topicReceiver1;
 
     @Test
     public void send1() throws Exception {
@@ -40,15 +36,8 @@ public class RabbitMqTopicTest {
     }
 
     @Test
-    public void rec() throws Exception {
-        //队列有数据
-        topicReceiver1.rec1();
-    }
-
-    @Test
-    public void rec2() throws Exception {
-        //队列有数据
-        topicReceiver1.rec2();
+    public void send4() throws Exception {
+        topicSender.send4();
     }
 
     @Test
