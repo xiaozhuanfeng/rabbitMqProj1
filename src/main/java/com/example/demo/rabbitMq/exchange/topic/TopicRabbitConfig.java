@@ -19,6 +19,8 @@ public class TopicRabbitConfig {
      */
     public static final String ARM_QUEUE = "arm.queue";
 
+    public static final String BYTE_QUEUE = "byte.queue";
+
     @Bean
     public Queue queueTopicMessage() {
         return new Queue(TopicRabbitConfig.TOPIC_MESSAGE);
@@ -37,11 +39,18 @@ public class TopicRabbitConfig {
     @Bean
     public Queue queueArm() {
         return new Queue(TopicRabbitConfig.ARM_QUEUE);
+        //return new Queue(TopicRabbitConfig.ARM_QUEUE,false);
+    }
+
+    @Bean
+    public Queue queueByte() {
+        return new Queue(TopicRabbitConfig.BYTE_QUEUE);
     }
 
     @Bean
     TopicExchange exchange() {
         return new TopicExchange("topicExchange");
+        //return new TopicExchange("topicExchange",false,false);
     }
 
     @Bean
@@ -65,5 +74,10 @@ public class TopicRabbitConfig {
     @Bean
     Binding bindingExchangeArm(Queue queueArm, TopicExchange exchange) {
         return BindingBuilder.bind(queueArm).to(exchange).with("arm.#");
+    }
+
+    @Bean
+    Binding bindingExchangeByte(Queue queueByte, TopicExchange exchange) {
+        return BindingBuilder.bind(queueByte).to(exchange).with("byte.#");
     }
 }
