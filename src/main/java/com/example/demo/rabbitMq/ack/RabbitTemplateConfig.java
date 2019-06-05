@@ -17,9 +17,6 @@ public class RabbitTemplateConfig {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private AmqpTemplate rabbitTemplate;
-
     /**
      * 定制化amqp模板
      * ReturnCallback接口用于实现消息发送到RabbitMQ 交换器，但无相应队列与交换器绑定时的回调  即消息发送不到任何一个队列中  ack
@@ -28,11 +25,9 @@ public class RabbitTemplateConfig {
      * @return
      */
     @Bean("rabbitTemplateAck")
-    public AmqpTemplate getabbitTemplate() {
-        RabbitTemplate rabbitTemplateAck = (RabbitTemplate) this.rabbitTemplate;
-
+    public AmqpTemplate getabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate rabbitTemplateAck = new RabbitTemplate(connectionFactory);
         rabbitTemplateAck.setMessageConverter(new Jackson2JsonMessageConverter());
-
         rabbitTemplateAck.setMandatory(true);
 
         //消息返回, 需要配置spring.rabbitmq.publisher-returns=true

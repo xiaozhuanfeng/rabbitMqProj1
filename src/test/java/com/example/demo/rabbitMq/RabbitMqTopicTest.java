@@ -4,6 +4,7 @@ import com.example.demo.rabbitMq.exchange.topic.TopicSender;
 import com.example.demo.utils.Base64Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,6 +16,14 @@ import java.util.stream.Stream;
 public class RabbitMqTopicTest {
     @Autowired
     private TopicSender topicSender;
+
+    @Autowired
+    private ConnectionFactory connectionFactory;
+
+    @Test
+    public void test1(){
+        System.out.println("connectionFactory = "+connectionFactory);
+    }
 
     @Test
     public void send1() throws Exception {
@@ -47,9 +56,17 @@ public class RabbitMqTopicTest {
 
     @Test
     public void send5() throws Exception {
+
         for (int i = 0; i <10 ; i++) {
             topicSender.send5();
         }
     }
+
+    @Test
+    public void send6() throws Exception {
+        topicSender.delaySend();
+    }
+
+
 
 }

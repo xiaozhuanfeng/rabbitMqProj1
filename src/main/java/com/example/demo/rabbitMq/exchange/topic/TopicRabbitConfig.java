@@ -7,6 +7,9 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class TopicRabbitConfig {
 
@@ -20,6 +23,11 @@ public class TopicRabbitConfig {
     public static final String ARM_QUEUE = "arm.queue";
 
     public static final String BYTE_QUEUE = "byte.queue";
+
+    /**
+     * 延时Queue
+     */
+    public static final String DELAY_QUEUE = "delay.queue";
 
     @Bean
     public Queue queueTopicMessage() {
@@ -48,9 +56,25 @@ public class TopicRabbitConfig {
     }
 
     @Bean
+    public Queue delayQueue(){
+        return new Queue(DELAY_QUEUE, true);
+    }
+
+    @Bean
     TopicExchange exchange() {
         return new TopicExchange("topicExchange");
         //return new TopicExchange("topicExchange",false,false);
+    }
+
+    @Bean
+    TopicExchange delayExchange() {
+        Map<String, Object> pros = new HashMap<String, Object>();
+        //设置交换机支持延迟消息推送
+        pros.put("x-delayed-message", "topic");
+        TopicExchange delayTopicExchange = new TopicExchange("delayTopicExchange",true,false,pros);
+
+        delayTopicExchange.setDelayed(true);
+        return delayTopicExchange;
     }
 
     @Bean
@@ -79,5 +103,10 @@ public class TopicRabbitConfig {
     @Bean
     Binding bindingExchangeByte(Queue queueByte, TopicExchange exchange) {
         return BindingBuilder.bind(queueByte).to(exchange).with("byte.#");
+    }
+
+    @Bean
+    Binding bindingDelayExchange(Queue delayQueue, TopicExchange delayExchange) {
+        return BindingBuilder.bind(delayQueue).to(delayExchange).with("delay.#");
     }
 }
